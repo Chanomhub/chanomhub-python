@@ -128,7 +128,7 @@ class ArticleListOptions(BaseModel):
 class ArticleQueryOptions(BaseModel):
     language: Optional[str] = None
     version: Optional[str] = None
-    preset: Optional[ArticlePreset] = "full"
+    preset: Optional[ArticlePreset] = "complete"
     fields: Optional[List[ArticleField]] = None
     limit: Optional[int] = None
     offset: Optional[int] = None

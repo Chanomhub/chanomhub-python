@@ -114,7 +114,10 @@ class ArticleRepository:
             "version": options.version,
         }
 
+        print(f"DEBUG SLUG QUERY: {query}")
+        print(f"DEBUG SLUG VARS: {variables}")
         data = self.client.graphql_fetch(query, variables=variables, operation_name="GetArticleBySlug")
+        print(f"DEBUG SLUG DATA: {data}")
         article_data = data.get("public", {}).get("article")
         
         if not article_data:

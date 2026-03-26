@@ -45,7 +45,7 @@ class Download(BaseModel):
     is_active: bool = Field(..., alias="isActive")
     vip_only: bool = Field(..., alias="vipOnly")
     created_at: Optional[str] = Field(None, alias="createdAt")
-    type: str # 'DIRECT_FILE' | 'EXTERNAL_MIRROR' | 'PURCHASE_REDIRECT'
+    type: Optional[str] = None # 'DIRECT_FILE' | 'EXTERNAL_MIRROR' | 'PURCHASE_REDIRECT'
     is_purchase_redirect: Optional[bool] = Field(None, alias="isPurchaseRedirect")
     is_direct_file: Optional[bool] = Field(None, alias="isDirectFile")
 

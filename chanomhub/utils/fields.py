@@ -95,9 +95,6 @@ FIELD_MAPPINGS: Dict[ArticleField, str] = {
     url
     isActive
     vipOnly
-    forVersion
-    createdAt
-    updatedAt
   }""",
     "downloadLinks": """downloads {
     id
