@@ -6,6 +6,7 @@ from ..models.article import (
     ArticleListOptions,
     ArticleQueryOptions,
     ArticleStatus,
+    ArticleCreate,
 )
 from ..models.common import PaginatedResponse, NamedEntity, Mod, OfficialDownloadSource, Download
 from ..utils.fields import build_fields_query, build_mod_fields_query
@@ -33,14 +34,16 @@ class ArticleRepository:
         filter_arg = f'filter: {{ {", ".join(filter_parts)} }}, ' if filter_parts else ""
         fields_query = build_fields_query(options.preset, options.fields)
 
+        status_val = options.status.value if hasattr(options.status, "value") else options.status
         query = f"""query GetArticles {{
       public {{
-        articles({filter_arg}limit: {options.limit}, offset: {options.offset}, status: {options.status}) {{
+        articles({filter_arg}limit: {options.limit}, offset: {options.offset}, status: {status_val}) {{
           {fields_query}
         }}
       }}
     }}"""
 
+        print(f"DEBUG QUERY: {query}")
         data = self.client.graphql_fetch(query, operation_name="GetArticles")
         articles_data = data.get("public", {}).get("articles", [])
         
@@ -66,9 +69,10 @@ class ArticleRepository:
         count_filter_arg = f'(filter: {{ {", ".join(filter_parts)} }})' if filter_parts else ""
         fields_query = build_fields_query(options.preset, options.fields)
 
+        status_val = options.status.value if hasattr(options.status, "value") else options.status
         query = f"""query GetArticlesPaginated {{
       public {{
-        articles({filter_arg}limit: {options.limit}, offset: {options.offset}, status: {options.status}) {{
+        articles({filter_arg}limit: {options.limit}, offset: {options.offset}, status: {status_val}) {{
           {fields_query}
         }}
         articlesCount{count_filter_arg}
@@ -195,3 +199,13 @@ class ArticleRepository:
 
     def increment_view(self, slug: str) -> None:
         self.client.rest_fetch(f"/api/articles/{slug}/view", method="POST")
+
+    def create(self, article: ArticleCreate) -> Article:
+        data = self.client.rest_fetch(
+            "/api/articles",
+            method="POST",
+            json=article.model_dump(by_alias=True, exclude_none=True)
+        )
+        # The backend returns { article: ArticleDTO }
+        article_data = data.get("article") if isinstance(data, dict) else data
+        return Article.model_validate(article_data)

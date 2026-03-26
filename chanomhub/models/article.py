@@ -132,3 +132,26 @@ class ArticleQueryOptions(BaseModel):
     fields: Optional[List[ArticleField]] = None
     limit: Optional[int] = None
     offset: Optional[int] = None
+
+class ArticleCreate(BaseModel):
+    title: str
+    slug: Optional[str] = None
+    description: str
+    body: str
+    price: Optional[float] = 0
+    is_premium: Optional[bool] = Field(False, alias="isPremium")
+    language: Optional[str] = None
+    ver: Optional[str] = None
+    status: Optional[ArticleStatus] = ArticleStatus.DRAFT
+    engine: Optional[str] = None
+    main_image: Optional[str] = Field(None, alias="mainImage")
+    background_image: Optional[str] = Field(None, alias="backgroundImage")
+    cover_image: Optional[str] = Field(None, alias="coverImage")
+    other_images: List[str] = Field([], alias="otherImages")
+    tags: List[str] = []
+    categories: List[str] = []
+    platforms: List[str] = []
+    creator: Optional[str] = None
+
+    class Config:
+        populate_by_name = True

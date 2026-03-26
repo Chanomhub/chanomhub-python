@@ -76,3 +76,23 @@ class Mod(BaseModel):
 class ItemType(str, Enum):
     ARTICLE = "ARTICLE"
     MOD = "MOD"
+
+class ModType(str, Enum):
+    MOD = "MOD"
+    PATCH = "PATCH"
+    OTHER = "OTHER"
+
+class ModCreate(BaseModel):
+    name: str
+    description: str
+    version: str
+    download_link: str = Field(..., alias="downloadLink")
+    credit_to: Optional[str] = Field(None, alias="creditTo")
+    images: List[str] = []
+    type: ModType = ModType.MOD
+    category_ids: List[int] = Field([], alias="categoryIds")
+    price: Optional[float] = 0
+    is_premium: Optional[bool] = Field(False, alias="isPremium")
+
+    class Config:
+        populate_by_name = True
