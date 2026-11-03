@@ -58,6 +58,8 @@ class OfficialDownloadSource(BaseModel):
     url: str
     status: str
 
+OfficialSource = OfficialDownloadSource
+
 class Mod(BaseModel):
     id: int
     name: str

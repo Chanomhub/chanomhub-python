@@ -8,7 +8,7 @@ from ..models.article import (
     ArticleStatus,
     ArticleCreate,
 )
-from ..models.common import PaginatedResponse, NamedEntity, Mod, OfficialDownloadSource, Download
+from ..models.common import PaginatedResponse, NamedEntity, Mod, OfficialDownloadSource, Download  # OfficialSource alias exists in models.common
 from ..utils.fields import build_fields_query, build_mod_fields_query
 from ..utils.urls import transform_image_urls_deep, resolve_download_url
 
@@ -167,6 +167,17 @@ class ArticleRepository:
     def get_engines(self) -> List[NamedEntity]:
         data = self.client.rest_fetch("/api/engines")
         return [NamedEntity.model_validate(item) for item in data]
+
+    def detect_engine(self, url: str) -> Optional[Dict[str, Any]]:
+        """Detect the game engine of an uploaded file from its URL."""
+        data = self.client.rest_fetch("/api/engines/detect", method="POST", json={"url": url})
+        return data if data else None
+
+    def get_official_sources(self, article_id: int) -> List[OfficialDownloadSource]:
+        """Approved publisher (official) purchase links for an article."""
+        data = self.client.rest_fetch(f"/api/official-download-sources/article/{article_id}/approved")
+        items = data.get("officialDownloadSources", []) if isinstance(data, dict) else data or []
+        return [OfficialDownloadSource.model_validate(item) for item in items]
 
     def get_mods(self, article_id: int, fields: Optional[List[str]] = None) -> List[Mod]:
         fields_query = build_mod_fields_query(fields)
