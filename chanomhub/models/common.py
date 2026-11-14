@@ -48,6 +48,7 @@ class Download(BaseModel):
     type: Optional[str] = None # 'DIRECT_FILE' | 'EXTERNAL_MIRROR' | 'PURCHASE_REDIRECT'
     is_purchase_redirect: Optional[bool] = Field(None, alias="isPurchaseRedirect")
     is_direct_file: Optional[bool] = Field(None, alias="isDirectFile")
+    platforms: Optional[list[str]] = None
 
     class Config:
         populate_by_name = True
